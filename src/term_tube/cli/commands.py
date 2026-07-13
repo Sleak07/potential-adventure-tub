@@ -1,13 +1,16 @@
 # TODO: : Ask for input and display a loading bar
 #
-import time
-import typer
-from rich.prompt import Prompt
-from rich.progress import track
 
-""" Ask for the song name you want to search """
+import typer
+import time
+from rich.prompt import Prompt
+from rich.progress import Progress, SpinnerColumn, TextColumn
+
 
 app = typer.Typer()
+
+
+""" Ask for the song name you want to search """
 
 
 @app.command()
@@ -16,13 +19,29 @@ def ask_prompt():
     print(f"You have searched for {name}!")
 
 
+""" Ask for the entry or exit from app """
+
+
 @app.command()
-def loading_bar():
-    total = 0
-    for value in track(range(100), description="Processing ..."):
-        time.sleep(0.01)
-        total += 1
-    print(f"Processed {total} things.")
+def choice_exit():
+    depart = typer.confirm("Are you sure you want to exit it?", abort=True)
+    print(f"{depart}, Exiting the app")
+
+
+"""  Get the progress of app """
+
+
+@app.command()
+def progress_bar():
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[progress.description]{task.description}"),
+        transient=True,
+    ) as progress:
+        progress.add_task(description="Processing...", total=None)
+        progress.add_task(description="Preparing...", total=None)
+        time.sleep(5)
+    print("Done!")
 
 
 if __name__ == "__main__":
